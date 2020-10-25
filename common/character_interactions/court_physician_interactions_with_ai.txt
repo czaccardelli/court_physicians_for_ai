@@ -63,14 +63,15 @@
                         has_relation_court_physician = prev
                     }
                 }
+                # don't bother unless there's a courtier who is at least competent
+                learning >= average_skill_rating
             }
+            gold > court_physician_gold_value
         }
     }
 
     ai_target_quick_trigger = {
         adult = yes
-        # don't bother unless there's a courtier who is at least competent
-        learning >= average_skill_rating
     }
 
     ai_targets = {
@@ -78,28 +79,29 @@
     }
 
     ai_will_do = {
-        base = 10
+        base = 0
         
         modifier = {
-            add = 60
+            add = 10
             scope:actor = {
                 short_term_gold > court_physician_cost_value 
             }
         }
         modifier = {
-            add = 30
+            add = 10
             scope:actor = {
                 yearly_character_income > court_physician_cost_value
             }
         }
         modifier = {
-            add = 30
+            add = 20
             scope:actor = {
+                # try to have a court physician during a war!
                 is_at_war = yes
             }
         }
         modifier = {
-            add = 10
+            add = 30
             # mystics and physicians are valued
             scope:recipient = {
                 OR = {
@@ -109,17 +111,25 @@
             }
         }
         modifier = {
-            add = 10
+            add = 30
             # high learning candidates are valued
             scope:recipient = {
                     # learning skill rating of at least 15; considered important for physicians to have better than base outcomes
                    learning >= high_skill_rating 
             }
         }
-        
+
+        modifier = {
+            factor = 0.1
+            scope:recipient = {
+                # candidates with low learning should probably not be chosen because they can do more harm than good
+                learning < average_skill_rating 
+            }
+        }
+
         # try not to choose characters that dislike the actor because there's a chance they will purposely harm the actor during treatment
         modifier = {
-            factor = 0.5
+            factor = 0.3
             scope:recipient = {
                 opinion = {
                     target = scope:actor
@@ -130,7 +140,7 @@
 
         # very unlikely or impossible to choose potential or actual rivals and nemeses because they'll probably harm the actor on purpose during treatment
         modifier = {
-            factor = 0.2
+            factor = 0.1
             scope:actor = {
                 has_relation_potential_rival = scope:recipient
             }
