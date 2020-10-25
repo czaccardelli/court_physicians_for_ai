@@ -1,0 +1,1 @@
+﻿court_physician_cost_value = 10

@@ -1,0 +1,151 @@
+﻿hire_court_physician_interaction = {
+	category = interaction_category_vassal
+
+	desc = hire_court_physician_interaction_desc
+
+	is_shown = {
+		scope:recipient = {
+			is_courtier_of = scope:actor
+			is_adult = yes
+		}
+		scope:actor = {
+			NOT = {
+				any_relation = {
+					type = court_physician
+					this = scope:recipient
+				}
+			}
+		}
+	}
+
+	is_valid_showing_failures_only = {
+		scope:recipient = {
+			can_be_court_physician_of = { EMPLOYER = scope:actor }
+		}
+	}
+
+	cost = {
+		gold = court_physician_cost_value
+	}
+	
+	on_accept = {
+        debug_log = "court physician hired"
+		scope:actor = {
+			send_interface_message = {
+				type = event_generic_neutral
+				title = msg_hired_court_physician_interaction_title
+				right_icon = scope:recipient
+
+				set_court_physician_effect = {
+					PHYSICIAN = scope:recipient
+					EMPLOYER = scope:actor
+				}
+			}
+		}
+		scope:recipient = {
+			if = {
+				add_opinion = {
+					target = scope:actor
+					modifier = grateful_opinion
+					opinion = 15 #Should match the amount lost when fired so it's not a way to farm opinion
+				}
+			}
+		}
+	}
+
+    ai_frequency = 6
+
+    ai_potential = {
+        scope:actor = {
+            any_courtier = {
+                NOT = {
+                    scope:actor = {
+                        has_relation_court_physician = prev
+                    }
+                }
+            }
+        }
+    }
+
+    ai_target_quick_trigger = {
+        adult = yes
+        # don't bother unless there's a courtier who is at least competent
+        learning >= average_skill_rating
+    }
+
+    ai_targets = {
+        ai_recipients = courtiers
+    }
+
+    ai_will_do = {
+        base = 10
+        
+        modifier = {
+            add = 60
+            scope:actor = {
+                short_term_gold > court_physician_cost_value 
+            }
+        }
+        modifier = {
+            add = 30
+            scope:actor = {
+                yearly_character_income > court_physician_cost_value
+            }
+        }
+        modifier = {
+            add = 30
+            scope:actor = {
+                is_at_war = yes
+            }
+        }
+        modifier = {
+            add = 10
+            # mystics and physicians are valued
+            scope:recipient = {
+                OR = {
+                    has_trait = lifestyle_physician
+                    has_trait = lifestyle_mystic
+                }
+            }
+        }
+        modifier = {
+            add = 10
+            # high learning candidates are valued
+            scope:recipient = {
+                    # learning skill rating of at least 15; considered important for physicians to have better than base outcomes
+                   learning >= high_skill_rating 
+            }
+        }
+        
+        # try not to choose characters that dislike the actor because there's a chance they will purposely harm the actor during treatment
+        modifier = {
+            factor = 0.5
+            scope:recipient = {
+                opinion = {
+                    target = scope:actor
+                    value < 0
+                }
+            }
+        }
+
+        # very unlikely or impossible to choose potential or actual rivals and nemeses because they'll probably harm the actor on purpose during treatment
+        modifier = {
+            factor = 0.2
+            scope:actor = {
+                has_relation_potential_rival = scope:recipient
+            }
+        }
+
+        modifier = {
+            factor = 0
+            scope:actor = {
+                OR = {
+                    has_relation_rival = scope:recipient
+                    has_relation_nemesis = scope:recipient
+                }
+            }
+        } 
+    }
+	
+	auto_accept = yes
+}
