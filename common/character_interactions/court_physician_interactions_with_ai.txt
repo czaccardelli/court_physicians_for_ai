@@ -56,18 +56,13 @@
     ai_frequency = 6
 
     ai_potential = {
-        scope:actor = {
-            any_courtier = {
-                NOT = {
-                    scope:actor = {
-                        has_relation_court_physician = prev
-                    }
-                }
-                # don't bother unless there's a courtier who is at least competent
-                learning >= average_skill_rating
-            }
-            gold > court_physician_gold_value
+        is_ruler = yes
+        any_courtier = {
+            NOT = { has_relation_court_physician = prev }
+            # don't bother unless there's a courtier who is at least competent
+            learning >= average_skill_rating
         }
+        gold > court_physician_gold_value
     }
 
     ai_target_quick_trigger = {
