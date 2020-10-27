@@ -30,18 +30,17 @@
 	
 	on_accept = {
         debug_log = "court physician hired"
-		scope:actor = {
-			send_interface_message = {
-				type = event_generic_neutral
-				title = msg_hired_court_physician_interaction_title
-				right_icon = scope:recipient
-
-				set_court_physician_effect = {
-					PHYSICIAN = scope:recipient
-					EMPLOYER = scope:actor
-				}
-			}
-		}
+        every_player = {
+            send_interface_message = {
+                type = event_generic_neutral
+                title = msg_hired_court_physician_interaction_title
+                right_icon = scope:recipient
+            } 
+            set_court_physician_effect = {
+                PHYSICIAN = scope:recipient
+                EMPLOYER = scope:actor
+            }
+        }
 		scope:recipient = {
 			if = {
 				add_opinion = {
@@ -57,12 +56,8 @@
 
     ai_potential = {
         is_ruler = yes
-        any_courtier = {
-            NOT = { has_relation_court_physician = prev }
-            # don't bother unless there's a courtier who is at least competent
-            learning >= average_skill_rating
-        }
-        gold > court_physician_gold_value
+        ai_wants_to_hire_court_physician_trigger = yes
+        gold > court_physician_cost_value
     }
 
     ai_target_quick_trigger = {
@@ -89,7 +84,7 @@
             }
         }
         modifier = {
-            add = 20
+            add = 50
             scope:actor = {
                 # try to have a court physician during a war!
                 is_at_war = yes
@@ -115,9 +110,9 @@
         }
 
         modifier = {
-            factor = 0.1
+            factor = 0
             scope:recipient = {
-                # candidates with low learning should probably not be chosen because they can do more harm than good
+                # candidates with low learning should not be chosen because they can do more harm than good
                 learning < average_skill_rating 
             }
         }

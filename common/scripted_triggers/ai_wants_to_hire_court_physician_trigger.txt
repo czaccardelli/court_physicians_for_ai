@@ -1,0 +1,24 @@
+﻿ai_wants_to_hire_court_physician_trigger = {
+    trigger_if = {
+        # if you're at war, just make sure you have someone competent
+        limit = { is_at_war = yes }
+        any_courtier = {
+            learning >= average_skill_rating
+        }
+    }
+    trigger_else = {
+        # if you're not at war, only bother if there's someone good
+        any_courtier = {
+            OR = {
+                learning >= high_skill_rating
+                AND = {
+                    learning >= average_skill_rating
+                    OR = {
+                        has_trait = lifestyle_physician
+                        has_trait = lifestyle_mystic
+                    }
+                }
+            }
+        }
+    }
+}
