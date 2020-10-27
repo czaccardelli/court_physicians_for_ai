@@ -34,11 +34,11 @@
             send_interface_message = {
                 type = event_generic_neutral
                 title = msg_hired_court_physician_interaction_title
-                right_icon = scope:recipient
-            } 
-            set_court_physician_effect = {
-                PHYSICIAN = scope:recipient
-                EMPLOYER = scope:actor
+                right_icon = scope:recipient 
+                set_court_physician_effect = {
+                    PHYSICIAN = scope:recipient
+                    EMPLOYER = scope:actor
+                }
             }
         }
 		scope:recipient = {
